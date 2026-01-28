@@ -83,9 +83,8 @@ class Stock:
         df_all = pd.read_csv(f'data/{self.get_symbol()}.csv')
         df_part = df_all.tail(30)
 
-        if df_part['volume'].tail(1) == df_part['volume'].min():
-            with open(f'results/strategy_min_volume.txt', 'a') as f:
-                f.write(f"Stock {self.get_symbol()} has the minimum volume in the last 30 days.\n")
+        if df_part['volume'].iloc[-1] == df_part['volume'].min():
+            print(f"Stock {self.get_symbol()} has the minimum volume in the last 30 days.\n")
             return self.get_symbol()
 
 
