@@ -38,7 +38,8 @@ class Stock:
         if not self.symbol:
             raise ValueError("Stock symbol is not set.")
         if self.get_start_date() >= self.get_end_date():
-            raise ValueError("Start date must be earlier than end date.")
+            # raise ValueError("Start date must be earlier than end date.")
+            return None
         else:
             rs = bs.query_history_k_data_plus(code=self.symbol, start_date=self.get_start_date(), end_date=self.get_end_date(
             ), fields="date,code,open,high,low,close,preclose,volume,amount,adjustflag,turn,tradestatus,pctChg,isST")
@@ -48,13 +49,16 @@ class Stock:
                 return rs
 
     def to_dataframe(self):
-        rs = self.fetch_data()
-        data_list = []
-        while rs.next():
-            data_list.append(rs.get_row_data())
-        if not data_list:
-            return pd.DataFrame(columns=rs.fields)
-        return pd.DataFrame(data_list, columns=rs.fields)
+        if self.fetch_data() is None:
+            return pd.DataFrame()
+        else:
+            rs = self.fetch_data()
+            data_list = []
+            while rs.next():
+                data_list.append(rs.get_row_data())
+            if not data_list:
+                return pd.DataFrame(columns=rs.fields)
+            return pd.DataFrame(data_list, columns=rs.fields)
 
     # 判断股票数据文件是否存在且非空
     def is_data_file_valid(self):

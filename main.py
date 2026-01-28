@@ -23,11 +23,10 @@ def update_individual_stock_data():
     stock_df = pd.read_csv("data/stock_data.csv", dtype={'code': str})
     bs.login()
     for _, row in stock_df.iterrows():
-        if str(row['type']) == '1' and str(row['status']) == '1' and (str(row['code'])[3:5] not in ['300', '310', '688']):  # 仅更新股票且在市状态的证券
+        if str(row['type']) == '1' and str(row['status']) == '1' and (row['code'][3:6] not in ['300', '310', '688']):
             stock = Stock()
             stock.set_symbol(row['code'])
             stock.save_to_csv()
-            # break  # 测试时只更新一只股票，正式使用时删除此行
     bs.logout()
 
 
