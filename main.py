@@ -16,21 +16,20 @@ def update_stock_data():
         data.append(rs.get_row_data())
     df = pd.DataFrame(data, columns=rs.fields)
     df.to_csv("data/stock_data.csv", index=False, encoding="utf_8_sig")
-    print(df)
 
 
 def update_individual_stock_data():
     stock_df = pd.read_csv("data/stock_data.csv", dtype={'code': str})
     bs.login()
     for _, row in stock_df.iterrows():
-        if str(row['type']) == '1' and str(row['status']) == '1' and (row['code'][3:6] not in ['300', '310', '688']):
+        if str(row['type']) == '1' and str(row['status']) == '1' and row['code'][3:6] not in ['300', '310', '688']:
             stock = Stock()
             stock.set_symbol(row['code'])
             stock.save_to_csv()
     bs.logout()
 
-
-def main():
+""" 
+def main_bak():
     is_update_stock_data = input("是否更新股票列表数据？(y/n): ").strip().lower() == 'y'
     if is_update_stock_data:
         if os.path.exists("data/stock_data.csv"):
@@ -40,6 +39,32 @@ def main():
         # 更新个股数据
         print("更新个股数据。")
         update_individual_stock_data()
+"""
+def main():
+    info = """
+    请选择要执行的操作：
+    1. 更新股票列表
+    2. 更新个股数据
+    3. 策略选股
+    """
+    print(info)
+    choice = input("请输入操作编号 (1/2/3): ").strip()
+
+    while choice not in ['1', '2', '3']:
+        choice = input("无效输入，请重新输入操作编号 (1/2/3): ").strip()
+    if choice=='1':
+        if os.path.exists("data/stock_data.csv"):
+            os.remove("data/stock_data.csv")
+        update_stock_data()
+        print('股票列表数据更新完成！')
+    elif choice=='2':
+        if not os.path.exists("data/stock_data.csv"):
+            print("股票列表数据不存在，正在更新股票列表数据...")
+            update_stock_data()
+        update_individual_stock_data()
+        print('个股数据更新完成！')
+    elif choice=='3':
+        pass  # 策略选股功能待实现
 
 
 if __name__ == "__main__":

@@ -35,16 +35,13 @@ class Stock:
         return datetime_today.strftime('%Y-%m-%d')
 
     def fetch_data(self):
-        if not self.symbol:
-            raise ValueError("Stock symbol is not set.")
         if self.get_start_date() >= self.get_end_date():
-            # raise ValueError("Start date must be earlier than end date.")
             return None
         else:
             rs = bs.query_history_k_data_plus(code=self.symbol, start_date=self.get_start_date(), end_date=self.get_end_date(
             ), fields="date,code,open,high,low,close,preclose,volume,amount,adjustflag,turn,tradestatus,pctChg,isST")
             if rs.error_code != '0':
-                raise ValueError("Failed to fetch stock data.")
+                raise ValueError(f"Failed to fetch {self.get_symbol()} data.")
             else:
                 return rs
 
@@ -70,7 +67,7 @@ class Stock:
     def save_to_csv(self):
         df = self.to_dataframe()
         if df.empty:
-            print("No new data to save.")
+            print(f"{self.get_symbol()} No new data to save.")
             return
         else:
             if self.is_data_file_valid():
@@ -79,15 +76,17 @@ class Stock:
                 print(f"Data appended to data/{self.get_symbol()}.csv")
             else:
                 df.to_csv(f'data/{self.get_symbol()}.csv',
-                          index=False, mode='a')
+                          index=False, mode='a',header=True)
                 print(f"Data saved to data/{self.get_symbol()}.csv")
 
-    def stock_strategy(self):
-        df = pd.read_csv(f'data/{self.get_symbol()}.csv')
-        df_month = df.tail(30)
+    def stock_strategy_min_volume(self):
+        df_all = pd.read_csv(f'data/{self.get_symbol()}.csv')
+        df_part = df_all.tail(30)
 
-        if df['volume'].tail(1) == df['volume'].min():
-            return self.get_symbol
+        if df_part['volume'].tail(1) == df_part['volume'].min():
+            with open(f'results/strategy_min_volume.txt', 'a') as f:
+                f.write(f"Stock {self.get_symbol()} has the minimum volume in the last 30 days.\n")
+            return self.get_symbol()
 
 
 if __name__ == "__main__":
