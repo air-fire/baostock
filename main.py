@@ -28,9 +28,10 @@ def update_individual_stock_data():
             stock.save_to_csv()
     bs.logout()
 
+
 def strategy_select_stocks():
     stock_df = pd.read_csv("data/stock_data.csv", dtype={'code': str})
-    selected_stocks = []       
+    selected_stocks = []
     for _, row in stock_df.iterrows():
         if str(row['type']) == '1' and str(row['status']) == '1' and row['code'][3:6] not in ['300', '310', '688']:
             stock = Stock()
@@ -39,6 +40,7 @@ def strategy_select_stocks():
             if result:
                 selected_stocks.append(result)
     return selected_stocks
+
 
 """
 def main_bak():
@@ -52,6 +54,8 @@ def main_bak():
         print("更新个股数据。")
         update_individual_stock_data()
 """
+
+
 def main():
     info = """
     请选择要执行的操作：
@@ -65,29 +69,28 @@ def main():
 
     while choice not in ['1', '2', '3', '4']:
         choice = input("无效输入，请重新输入操作编号 (1/2/3): ").strip()
-    if choice=='1':
+    if choice == '1':
         if os.path.exists("data/stock_data.csv"):
             os.remove("data/stock_data.csv")
         update_stock_data()
         print('股票列表数据更新完成！')
-    elif choice=='2':
+    elif choice == '2':
         if not os.path.exists("data/stock_data.csv"):
             print("股票列表数据不存在，正在更新股票列表数据...")
             update_stock_data()
         update_individual_stock_data()
         print('个股数据更新完成！')
-    elif choice=='3':        
+    elif choice == '3':
         selected_stocks = strategy_select_stocks()
         if not selected_stocks:
             print("没有符合策略的股票。")
         else:
             with open('results/selected_stocks.txt', 'w') as f:
                 for stock in selected_stocks:
-                    f.write(f"{stock}\n")
-    elif choice=='4':
+                    f.write(f"{stock}")
+    elif choice == '4':
         print("退出程序。")
         return
-
 
 
 if __name__ == "__main__":

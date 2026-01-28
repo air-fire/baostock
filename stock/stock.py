@@ -76,15 +76,16 @@ class Stock:
                 print(f"Data appended to data/{self.get_symbol()}.csv")
             else:
                 df.to_csv(f'data/{self.get_symbol()}.csv',
-                          index=False, mode='a',header=True)
+                          index=False, mode='a', header=True)
                 print(f"Data saved to data/{self.get_symbol()}.csv")
 
     def stock_strategy_min_volume(self):
         df_all = pd.read_csv(f'data/{self.get_symbol()}.csv')
-        df_part = df_all.tail(30)
+        df_part = df_all.tail(90)
 
         if df_part['volume'].iloc[-1] == df_part['volume'].min():
-            print(f"Stock {self.get_symbol()} has the minimum volume in the last 30 days.\n")
+            print(
+                f"Stock {self.get_symbol()} has the minimum volume in the last 30 days.\n")
             return self.get_symbol()
 
 
