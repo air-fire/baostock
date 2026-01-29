@@ -42,20 +42,6 @@ def strategy_select_stocks():
     return selected_stocks
 
 
-"""
-def main_bak():
-    is_update_stock_data = input("是否更新股票列表数据？(y/n): ").strip().lower() == 'y'
-    if is_update_stock_data:
-        if os.path.exists("data/stock_data.csv"):
-            os.remove("data/stock_data.csv")
-        update_stock_data()
-    else:
-        # 更新个股数据
-        print("更新个股数据。")
-        update_individual_stock_data()
-"""
-
-
 def main():
     info = """
     请选择要执行的操作：
@@ -87,7 +73,7 @@ def main():
         else:
             with open('results/selected_stocks.txt', 'w') as f:
                 for stock in selected_stocks:
-                    f.write(f"{stock}")
+                    f.write(f"{stock}\n")
     elif choice == '4':
         print("退出程序。")
         return

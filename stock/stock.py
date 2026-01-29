@@ -26,9 +26,9 @@ class Stock:
                 else:
                     return start_date.strftime('%Y-%m-%d')
             else:
-                return '2026-01-01'
+                return '2025-09-01'
         else:
-            return '2026-01-01'
+            return '2025-09-01'
 
     def get_end_date(self):
         datetime_today = datetime.date.today()
@@ -85,7 +85,7 @@ class Stock:
 
         if df_part['volume'].iloc[-1] == df_part['volume'].min():
             print(
-                f"Stock {self.get_symbol()} has the minimum volume in the last 30 days.\n")
+                f"Stock {self.get_symbol()} has the minimum volume in the last 90 days.")
             return self.get_symbol()
 
 
